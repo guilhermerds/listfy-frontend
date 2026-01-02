@@ -1,7 +1,7 @@
 services:
   server:
     build: .
-    container_name: listfy_frontend
+    container_name: listfy-frontend
     volumes: 
       - "./:/usr/app"
       - /usr/app/node_modules
