@@ -1,8 +1,12 @@
 FROM node:25-alpine3.21
+
 WORKDIR /usr/app
 
-COPY . .
+COPY package.json ./
+
 RUN npm install
+
+COPY . .
 
 EXPOSE 5173
 
