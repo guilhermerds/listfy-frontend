@@ -1,0 +1,18 @@
+#register-page {
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto auto 1fr 50px;
+}
+
+#register-page form {
+    width: 100%;
+    max-width: 700px;
+    height: auto;
+    margin: 0 auto;
+}
+
+#register-page footer {
+    margin-top: 20px;
+    font-size: 14px;
+    bottom: 0px;
+}
