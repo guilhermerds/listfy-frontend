@@ -1,21 +1,20 @@
-header {
+#primary-header {
     display: flex;
     align-items: center;
-    padding: 20px;
     flex-direction: column;
 }
 
-header a {
+#primary-header a {
     text-decoration: none;
     color: inherit;
 }
-header h1 {
+#primary-header h1 {
     font-size: 2.5em;
     margin: 0;
     display: flex;
     align-items: center;
 }
 
-header img {
+#primary-header img {
     height: 75px;
 }
