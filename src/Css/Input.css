@@ -20,12 +20,10 @@
 .form-input input {
     background-color: #1e372c;
     border: 0;
-    height: 26px;
     padding: 12px;
     border-radius: 16px;
     font-size: 1rem;
     color: #ffffff;
-    width: 100%;
 }
 
 .form-input input:has(+ .eye-icon) {

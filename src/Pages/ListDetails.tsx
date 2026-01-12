@@ -23,7 +23,7 @@ export const ListDetails = () => {
     let [isSocketConnected, setIsSocketConnected] = useState(false);
 
     const connectWS = () => {
-        if (isSocketConnected){
+        if (isSocketConnected) {
             console.log("WebSocket already connected");
             return;
         }
@@ -68,96 +68,119 @@ export const ListDetails = () => {
         socket.emit("joinList", listId);
     }
 
-useEffect(connectWS, []);
+    useEffect(connectWS, []);
 
-useEffect(() => {
-    const baseUrl = import.meta.env.VITE_SERVER_URL;
-    const token = localStorage.getItem('authToken');
-    const listId = window.location.pathname.split("/")[2];
+    useEffect(() => {
+        const baseUrl = import.meta.env.VITE_SERVER_URL;
+        const token = localStorage.getItem('authToken');
+        const listId = window.location.pathname.split("/")[2];
 
-    fetch(`${baseUrl}lists/${listId}`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            }
-            else if (response.status === 401) {
-                localStorage.removeItem('authToken');
-                navigate('/login');
+        fetch(`${baseUrl}lists/${listId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
             }
         })
-        .then(data => {
-            setListName(data.name);
-        });
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                else if (response.status === 401) {
+                    localStorage.removeItem('authToken');
+                    navigate('/login');
+                }
+            })
+            .then(data => {
+                setListName(data.name);
+            });
 
-    fetch(`${baseUrl}lists/${listId}/items`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            }
-            else if (response.status === 401) {
-                localStorage.removeItem('authToken');
-                window.location.href = '/login';
+        fetch(`${baseUrl}lists/${listId}/items`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
             }
         })
-        .then((data: IListItem[]) => {
-            setListItens(data);
-        });
-}, []);
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                else if (response.status === 401) {
+                    localStorage.removeItem('authToken');
+                    window.location.href = '/login';
+                }
+            })
+            .then((data: IListItem[]) => {
+                setListItens(data);
+            });
+    }, []);
 
-const updateItem = (itemId: string, isDone: boolean) => {
-    const baseUrl = import.meta.env.VITE_SERVER_URL;
-    const token = localStorage.getItem('authToken');
-    const listId = window.location.pathname.split("/")[2];
+    const updateItem = (itemId: string, isDone: boolean) => {
+        const baseUrl = import.meta.env.VITE_SERVER_URL;
+        const token = localStorage.getItem('authToken');
+        const listId = window.location.pathname.split("/")[2];
 
-    fetch(`${baseUrl}lists/${listId}/items/${itemId}`, {
-        method: 'PATCH',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ isDone })
-    })
-        .then(response => {
-            if (response.status === 401) {
-                localStorage.removeItem('authToken');
-                window.location.href = '/login';
+        fetch(`${baseUrl}lists/${listId}/items/${itemId}`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ isDone })
+        })
+            .then(response => {
+                if (response.status === 401) {
+                    localStorage.removeItem('authToken');
+                    window.location.href = '/login';
+                }
+            });
+    }
+
+    const deleteList = async (id: string) => {
+        const baseUrl = import.meta.env.VITE_SERVER_URL;
+        const token = localStorage.getItem('authToken');
+
+        const response = await fetch(`${baseUrl}lists/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
             }
         });
-}
 
-return (
-    <div>
-        <Header />
-        <h2>{listName}</h2>
-        <ul>
-            {listItens?.map((item, index) => (
-                <li key={index}>
-                    <input type="checkbox" name={item.id} id={item.id} defaultChecked={item.isDone}
-                        onClick={(e) => {
-                            updateItem(item.id, e.currentTarget.checked);
-                        }} />
-                    <div className="item-details">
-                        <div className="item-info">
-                            <p>{item.name}</p>
-                            <p>{item.amount}</p>
+        if (response.ok) {
+            navigate('/lists');
+        }
+        else if (response.status === 401) {
+            localStorage.removeItem('authToken');
+            navigate('/login');
+        }
+        else {
+            console.error('Failed to delete list');
+        }
+    }
+
+    return (
+        <div>
+            <Header />
+            <h2>{listName}</h2>
+            <ul>
+                {listItens?.map((item, index) => (
+                    <li key={index}>
+                        <input type="checkbox" name={item.id} id={item.id} defaultChecked={item.isDone}
+                            onClick={(e) => {
+                                updateItem(item.id, e.currentTarget.checked);
+                            }} />
+                        <div className="item-details">
+                            <div className="item-info">
+                                <p>{item.name}</p>
+                                <p>{item.amount}</p>
+                            </div>
+                            <div className="item-price">
+                                <p>${item.price}</p>
+                            </div>
                         </div>
-                        <div className="item-price">
-                            <p>${item.price}</p>
-                        </div>
-                    </div>
-                </li>
-            ))}
-        </ul>
-    </div>
-);
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
 }

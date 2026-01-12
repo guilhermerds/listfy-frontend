@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import Header from "../Components/Header"
-import { Link, useNavigate } from "react-router-dom";
-import "../Css/Lists.css"
+import LoginHeader from "../Components/LoginHeader";
+import { useNavigate } from "react-router-dom";
+import ListBar from "../Components/ListBar";
+import AddIcon from '@mui/icons-material/Add';
+import {Modal, Input, Button} from "../Components/Index";
+import toast from "react-hot-toast";
 
-type IList = {
+export type IList = {
     id: string;
     name: string;
     category: string;
@@ -15,6 +18,9 @@ type IList = {
 export const Lists = () => {
     const navigate = useNavigate();
     const [lists, setLists] = useState<IList[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [listName, setListName] = useState("");
+    const [category, setCategory] = useState("");
 
     useEffect(() => {
         const baseUrl = import.meta.env.VITE_SERVER_URL;
@@ -39,54 +45,89 @@ export const Lists = () => {
             console.error('Failed to fetch lists');
         }).then((data: IList[]) => {
             setLists(data);
-            
+
         }).catch(error => {
             console.error('Error fetching lists:', error);
         });
     }, []);
 
-    const deleteList = async (id: string) => {
+    const createList = async () => {
+        if (listName.trim() === "" || category.trim() === "") {
+            toast.error('Por favor, preencha todos os campos.');
+            return;
+        }
+
         const baseUrl = import.meta.env.VITE_SERVER_URL;
         const token = localStorage.getItem('authToken');
 
-        const response = await fetch(`${baseUrl}lists/${id}`, {
-            method: 'DELETE',
+        const response = await fetch(`${baseUrl}lists`, {
+            method: 'POST',
             headers: {
+                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
-            }
+            },
+            body: JSON.stringify({
+                name: listName,
+                category: category
+            })
         });
 
         if (response.ok) {
-            setLists(lists.filter(list => list.id !== id));
+            const newList: IList = await response.json();
+            setLists([...lists, newList]);
+            toast.success('Lista criada com sucesso!');
         }
         else if (response.status === 401) {
             localStorage.removeItem('authToken');
             navigate('/login');
         }
         else {
-            console.error('Failed to delete list');
+            toast.error('Erro ao criar a lista. Tente novamente.');
         }
+
+        setListName("");
+        setCategory("");
+        setIsModalOpen(false);
     }
 
-    return ( 
-        <div>
-            <Header />
-            <h2>Your Lists</h2>
+    return (
+        <div id="lists-page" className="max-w-3xl mx-auto my-0 p-5">
+            <LoginHeader />
+            <h1 className="text-3xl text-left font-bold my-6">Minhas Listas</h1>
             <div className="lists-container">
                 {lists.map(list => (
-                    <div className="list" key={list.id}>
-                        <Link className="list-link" to={`/lists/${list.id}`} key={list.id}>
-                            <h3>{list.name}</h3>
-                            <p>{list.category}</p>
-                        </Link>
-                        <div className="list-toolbox">
-                            <button><Link to={`/lists/${list.id}/edit`}>Edit</Link></button>
-                            <button onClick={() => deleteList(list.id)}>Delete</button>
-                        </div>
-                    </div>
+                    <ListBar key={list.id} list={list} />
                 ))}
             </div>
-            <button className="create-list-button" onClick={() => navigate('/lists/create')}>+</button>
+            <button className="h-[50px] w-[50px] rounded-full text-secondary bg-primary" onClick={() => setIsModalOpen(true)}>
+                <AddIcon fontSize="large" />
+            </button>
+
+            <Modal open={isModalOpen} setOpen={setIsModalOpen}>
+                <div className="mb-4 text-center max-w-3xl mx-auto">
+                    <h2 className="text-2xl font-bold">Criar Nova Lista</h2>
+
+                    <Input
+                        type="text"
+                        name="listName"
+                        value={listName}
+                        setValue={setListName}
+                        label="Nome da Lista"
+                        placeholder="Digite o nome da lista" />
+
+                    <Input
+                        type="text"
+                        name="category"
+                        value={category}
+                        setValue={setCategory}
+                        label="Categoria"
+                        placeholder="Digite a categoria da lista" />
+
+                    <Button className="mt-4" onClick={createList}>
+                        Criar Lista
+                    </Button>
+                </div>
+            </Modal>
         </div>
     );
 }

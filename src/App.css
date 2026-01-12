@@ -1,5 +1,13 @@
+ @import "tailwindcss";
+
+ @theme {
+  --color-primary: #2bee8c;
+  --color-primary-light: #92c9ad;
+  --color-secondary: #102219;
+  --color-secondary-light: #1e372c;
+ }
+
  #root {
-  /* max-width: 1280px; */
   margin: 0 auto;
   padding: 2rem;
   text-align: center;

@@ -21,7 +21,7 @@ const Input = ({ label, name, type, placeholder, value, setValue }: InputProps) 
             <div className="input-wrapper">
                 <input
                     name={name}
-                    className="main-input"
+                    className="main-input h-100% w-full"
                     type={inputType}
                     placeholder={placeholder}
                     value={value}
@@ -39,9 +39,9 @@ const Input = ({ label, name, type, placeholder, value, setValue }: InputProps) 
                         }}
                     >
                         {inputType === "password" ? (
-                            <VisibilityOffIcon sx={{ color: "white" }} />
+                            <VisibilityOffIcon />
                         ) : (
-                            <VisibilityIcon sx={{ color: "white" }} />
+                            <VisibilityIcon />
                         )}
                     </button>
                 )}

@@ -62,7 +62,7 @@ export const Login = () => {
     return (
         <div id="login-page">
             <Header />
-            <h1>Bem-vindo de volta!</h1>
+            <h1 className="text-3xl font-bold my-6">Bem-vindo de volta!</h1>
             <form id="login-form" onSubmit={login}>
                 <Input
                     label="Email"

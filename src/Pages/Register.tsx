@@ -70,7 +70,7 @@ export const Register = () => {
     return (
         <div id="register-page">
             <Header />
-            <h1>Crie sua conta</h1>
+            <h1 className="text-3xl font-bold my-6">Crie sua conta</h1>
             <form onSubmit={createAccount}>
                 <Input
                     label="Nome"
@@ -100,7 +100,7 @@ export const Register = () => {
                     value={confirmPassword}
                     setValue={setConfirmPassword}
                     placeholder="Confirme sua senha" />
-                <Button type="submit">Registrar</Button>
+                <Button className="text-black" type="submit">Registrar</Button>
             </form>
             <footer>Já tem uma conta? <Link to="/login">Entrar</Link></footer>
         </div>
