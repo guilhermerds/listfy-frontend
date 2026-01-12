@@ -99,7 +99,7 @@ export const Lists = () => {
                     <ListBar key={list.id} list={list} />
                 ))}
             </div>
-            <button className="h-[50px] w-[50px] rounded-full text-secondary bg-primary" onClick={() => setIsModalOpen(true)}>
+            <button className="h-13 w-13 rounded-full text-secondary bg-primary" onClick={() => setIsModalOpen(true)}>
                 <AddIcon fontSize="large" />
             </button>
 
