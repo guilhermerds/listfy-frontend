@@ -1,0 +1,49 @@
+.list-bar .list-link {
+    text-decoration: none;
+    color: inherit;
+    display: grid;
+    grid-template-areas: 'title image'
+                         'subtitle image';
+    grid-template-columns: 1fr 75px;
+    grid-template-rows: auto auto;
+    gap: 10px;
+}
+
+.list-bar .list-link:hover {
+    color: #fff;
+}
+
+.list-bar h4 {
+    margin: 0;
+    padding: 0;
+    grid-area: title;
+}
+
+.list-bar p {
+    grid-area: subtitle;
+}
+
+.list-bar .list-image {
+    width: 75px;
+    height: 75px;
+    border-radius: 16px;
+    margin: auto 0;
+    grid-area: image;
+    background-image: linear-gradient(-225deg, rgb(76, 138, 131), rgb(209, 164, 85), rgb(223, 97, 113));
+}
+
+.list-bar:nth-child(5n) .list-image {
+    background-image: linear-gradient(0deg, rgb(76, 138, 131), rgb(209, 85, 164), rgb(113, 97, 223));
+}
+
+.list-bar:nth-child(5n+1) .list-image {
+    background-image: linear-gradient(90deg, rgb(138, 76, 131), rgb(85, 209, 164), rgb(223, 113, 97));
+}
+
+.list-bar:nth-child(5n+2) .list-image {
+    background-image: linear-gradient(135deg, rgb(131, 138, 76), rgb(164, 85, 209), rgb(97, 223, 113));
+}
+
+.list-bar:nth-child(5n+3) .list-image {
+    background-image: linear-gradient(225deg, rgb(137, 229, 241), rgb(81, 230, 118), rgb(214, 241, 83));
+}
