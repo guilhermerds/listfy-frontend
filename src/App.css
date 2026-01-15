@@ -9,9 +9,8 @@
 
  #root {
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
-  height: calc(100vh - 64px);
+  height: 100vh;
 } 
 /*
 .logo {

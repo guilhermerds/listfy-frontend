@@ -4,7 +4,7 @@ import icon from "../Assets/Logo-Listfy.png"
 
 const Header = () => {
     return ( 
-        <header id="primary-header">
+        <header className="mt-4" id="primary-header">
             <Link to="/">
                 <img src={icon} alt="Listfy Ícone" />
             </Link>

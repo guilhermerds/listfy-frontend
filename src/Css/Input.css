@@ -13,22 +13,17 @@
 
 .form-input .input-wrapper {
     display: flex;
+    align-items: center;
     flex-direction: row;
     width: 100%;
 }
 
-.form-input input {
-    background-color: #1e372c;
-    border: 0;
-    padding: 12px;
-    border-radius: 16px;
-    font-size: 1rem;
-    color: #ffffff;
-}
-
 .form-input input:has(+ .eye-icon) {
     border-radius: 16px 0px 0px 16px;
-    /* width: calc(100% - 40px); */
+}
+
+.form-input div + input{
+    border-radius: 0 16px 16px 0;
 }
 
 .form-input input::placeholder {

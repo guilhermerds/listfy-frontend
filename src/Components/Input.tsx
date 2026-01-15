@@ -2,6 +2,7 @@ import { useState } from "react";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import "../Css/Input.css"
+import formatCurrency from "../Utils/Currency";
 
 type InputProps = {
     label: string;
@@ -19,13 +20,24 @@ const Input = ({ label, name, type, placeholder, value, setValue }: InputProps) 
         <div className="form-input">
             <label htmlFor={name}>{label}</label>
             <div className="input-wrapper">
+                {type === "money" && (
+                    <div className="h-full p-3 rounded-l-2xl bg-secondary-light text-gray-400">R$</div>
+                )}
                 <input
                     name={name}
-                    className="main-input h-100% w-full"
-                    type={inputType}
+                    className="main-input h-100% w-full p-3 border-0 rounded-2xl text-base bg-secondary-light"
+                    type={inputType === "money" ? "tel" : inputType}
                     placeholder={placeholder}
                     value={value}
-                    onChange={(e) => setValue(e.target.value)}
+                    inputMode={inputType === "money" || inputType === "number" ? "numeric" : "text"}
+                    onChange={(e) => {
+                        let newValue = e.target.value;
+
+                        if (inputType === "money") {
+                            newValue = formatCurrency(newValue);
+                        }
+                        setValue(newValue)
+                    }}
                 />
                 {type === "password" && (
                     <button

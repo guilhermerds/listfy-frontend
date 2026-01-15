@@ -3,7 +3,7 @@ import LoginHeader from "../Components/LoginHeader";
 import { useNavigate } from "react-router-dom";
 import ListBar from "../Components/ListBar";
 import AddIcon from '@mui/icons-material/Add';
-import {Modal, Input, Button} from "../Components/Index";
+import { Modal, Input, Button } from "../Components/Index";
 import toast from "react-hot-toast";
 
 export type IList = {
@@ -91,22 +91,28 @@ export const Lists = () => {
     }
 
     return (
-        <div id="lists-page" className="max-w-3xl mx-auto my-0 p-5">
+        <div id="lists-page" className="max-w-3xl mx-auto my-0 p-5 flex flex-col h-full">
             <LoginHeader />
             <h1 className="text-3xl text-left font-bold my-6">Minhas Listas</h1>
-            <div className="lists-container">
-                {lists.map(list => (
-                    <ListBar key={list.id} list={list} />
-                ))}
-            </div>
-            <button className="h-13 w-13 rounded-full text-secondary bg-primary" onClick={() => setIsModalOpen(true)}>
+            {lists.length > 0 ? (
+                <div className="lists-container flex-1 overflow-y-auto">
+                    {lists.map(list => (
+                        <ListBar key={list.id} list={list} />
+                    ))}
+                </div>
+            ) : (
+                <p className="flex-1 content-center text-lg">
+                    Crie a sua primeira Lista para adicionar os itens de compra. Clique no botão a baixo para começar.
+                </p>
+            )}
+
+            <button className="h-13 w-13 rounded-full text-secondary bg-primary ml-auto my-4 cursor-pointer" onClick={() => setIsModalOpen(true)}>
                 <AddIcon fontSize="large" />
             </button>
 
             <Modal open={isModalOpen} setOpen={setIsModalOpen}>
                 <div className="mb-4 text-center max-w-3xl mx-auto">
                     <h2 className="text-2xl font-bold">Criar Nova Lista</h2>
-
                     <Input
                         type="text"
                         name="listName"

@@ -5,5 +5,6 @@ import ListBar from "./ListBar";
 import LoginHeader from "./LoginHeader";
 import Modal from "./Modal";
 import ProtectedRoute from "./ProtectedRoute";
+import Checkbox from "./Checkbox";
 
-export { Button, Input, Header, ListBar, LoginHeader, Modal, ProtectedRoute }
+export { Button, Input, Header, ListBar, LoginHeader, Modal, ProtectedRoute, Checkbox }
