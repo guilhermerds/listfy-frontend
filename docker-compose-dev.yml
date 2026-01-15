@@ -1,0 +1,16 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev  # <--- O PULO DO GATO: Aponta para a etapa 'dev' do Dockerfile
+    container_name: listfy-frontend-dev
+    # Volumes: Faz o que você edita no Windows aparecer no Linux do container
+    volumes:
+      - ./:/usr/app
+      - /usr/app/node_modules # Evita sobrescrever a node_modules do container
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_SERVER_URL=http://localhost:3000
+      - VITE_WEBSOCKET_URL=http://localhost:3005
