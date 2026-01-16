@@ -7,11 +7,9 @@ services:
       # Passamos as variáveis aqui para o Dockerfile usar na hora do build
       args:
         VITE_SERVER_URL: "${VITE_SERVER_URL}"
-        VITE_WEBSOCKET_URL: "${VITE_WEBSOCKET_URL}"
     container_name: listfy-frontend
     restart: always
     ports:
-      - "4000:4000" # O 'serve' roda na 3000 conforme definimos no CMD acima
+      - "4000:4000"
     environment:
       - VITE_SERVER_URL=${VITE_SERVER_URL}
-      - VITE_WEBSOCKET_URL=${VITE_WEBSOCKET_URL}

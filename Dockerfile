@@ -19,9 +19,7 @@ FROM base AS builder
 COPY . .
 # Argumentos de ambiente para o build
 ARG VITE_SERVER_URL
-ARG VITE_WEBSOCKET_URL
 ENV VITE_SERVER_URL=$VITE_SERVER_URL
-ENV VITE_WEBSOCKET_URL=$VITE_WEBSOCKET_URL
 # Gera a pasta /dist
 RUN npm run build
 
