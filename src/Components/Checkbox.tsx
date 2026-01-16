@@ -15,7 +15,7 @@ const Checkbox = ({ item, onClick }: Props) => {
                 type="checkbox" 
                 name={item.id}
                 id={item.id}
-                defaultChecked={item.isDone}
+                checked={item.isDone}
                 onClick={onClick}
                  />
 

@@ -12,5 +12,5 @@ services:
     ports:
       - "5173:5173"
     environment:
-      - VITE_SERVER_URL=http://localhost:3000
-      - VITE_WEBSOCKET_URL=http://localhost:3005
+      - VITE_SERVER_URL=http://localhost:3000/
+      - VITE_WEBSOCKET_URL=http://localhost:3005/
