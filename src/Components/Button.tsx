@@ -1,5 +1,4 @@
 import type { ComponentProps } from "react";
-import "../Css/Button.css"
 
 interface Props extends ComponentProps<"button"> {
     priority?: boolean

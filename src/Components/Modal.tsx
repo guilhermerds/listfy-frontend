@@ -6,7 +6,6 @@ import {
   useAnimate,
   motion,
 } from "framer-motion";
-import "../Css/Modal.css";
 
 interface Props {
   open: boolean;
