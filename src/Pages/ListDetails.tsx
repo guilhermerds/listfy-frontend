@@ -341,7 +341,7 @@ export const ListDetails = () => {
                     </ul>
                 )
                 : (
-                    <p className="flex-1 content-center my-6 h-full">
+                    <p className="flex-1 content-center m-6 h-full">
                         Não existem itens nesta lista. Adicione no botão a baixo!
                     </p>
                 )

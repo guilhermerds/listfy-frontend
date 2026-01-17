@@ -60,7 +60,7 @@ export const Login = () => {
     }
 
     return (
-        <div id="login-page">
+        <div id="login-page" className="px-6">
             <Header />
             <h1 className="text-3xl font-bold my-6">Bem-vindo de volta!</h1>
             <form id="login-form" onSubmit={login}>

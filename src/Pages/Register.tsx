@@ -68,7 +68,7 @@ export const Register = () => {
     }
 
     return (
-        <div id="register-page">
+        <div id="register-page" className="px-6">
             <Header />
             <h1 className="text-3xl font-bold my-6">Crie sua conta</h1>
             <form onSubmit={createAccount}>
