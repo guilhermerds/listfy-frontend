@@ -5,8 +5,6 @@ import { Login } from './Pages/Login'
 import { Register } from './Pages/Register'
 import { Lists } from './Pages/Lists'
 import { ListDetails } from './Pages/ListDetails'
-import { EditListItem } from './Pages/EditListItem'
-import { EditList } from './Pages/EditList'
 import ProtectedRoute from './Components/ProtectedRoute'
 import { Toaster } from 'react-hot-toast'
 
@@ -24,12 +22,6 @@ function App() {
         } />
         <Route path="/lists/:id" element={
           <ProtectedRoute><ListDetails /></ProtectedRoute>
-        } />
-        <Route path="/lists/:id/edit" element={
-          <ProtectedRoute><EditList /></ProtectedRoute>
-        } />
-        <Route path="/lists/:id/create-item" element={
-          <ProtectedRoute><EditListItem /></ProtectedRoute>
         } />
       </Routes>
       <Toaster />
