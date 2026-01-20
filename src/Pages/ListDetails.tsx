@@ -373,7 +373,7 @@ export const ListDetails = () => {
     }
 
     return (
-        <div className="flex flex-col max-w-3xl mx-auto h-full">
+        <div className="flex flex-col max-w-3xl mx-auto h-full overflow-hidden">
             <LoginHeader returnPath="/lists" subtitle={category} MenuContent={ListMenu} listId={listId} />
             <h1 className="text-3xl text-left font-bold my-6 ml-6">{listName}</h1>
 

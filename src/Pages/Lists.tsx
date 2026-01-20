@@ -91,7 +91,7 @@ export const Lists = () => {
     }
 
     return (
-        <div id="lists-page" className="max-w-3xl mx-auto my-0 p-5 flex flex-col h-full">
+        <div id="lists-page" className="max-w-3xl mx-auto my-0 p-5 flex flex-col h-full overflow-hidden">
             <LoginHeader />
             <h1 className="text-3xl text-left font-bold my-6">Minhas Listas</h1>
             {lists.length > 0 ? (

@@ -25,7 +25,7 @@ export const Register = () => {
 
         if (password.length < 8) {
             toast.error('A senha deve ter no mínimo 8 caracteres.');
-            return; 
+            return;
         }
 
         if (password !== confirmPassword) {
@@ -108,7 +108,9 @@ export const Register = () => {
                     placeholder="Confirme sua senha" />
                 <Button className="text-black" type="submit">Registrar</Button>
             </form>
-            <footer>Já tem uma conta? <Link to="/login">Entrar</Link></footer>
+            <footer className="text-sm mb-6">
+                Já tem uma conta? <Link to="/login">Entrar</Link>
+            </footer>
         </div>
     );
 }

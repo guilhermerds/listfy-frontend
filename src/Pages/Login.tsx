@@ -30,11 +30,11 @@ export const Login = () => {
                 },
                 body: JSON.stringify({ email, password }),
             })
-    
+
             if (response.ok) {
                 const data = await response.json();
                 const token = data.access_token;
-    
+
                 if (token) {
                     toast.dismiss();
                     localStorage.setItem('authToken', token);
@@ -62,7 +62,7 @@ export const Login = () => {
     }
 
     return (
-        <div id="login-page" className="px-6">
+        <div id="login-page" className="px-6 overflow-hidden">
             <Helmet>
                 <meta property="description" content="Acesse sua conta Listify. Entre para ver suas listas de compras compartilhadas, continuar marcando itens e verificar o histórico de preços da sua feira." />
                 <link rel="canonical" href={`${url}login`} />
@@ -88,7 +88,9 @@ export const Login = () => {
                 />
                 <Button type="submit">Login</Button>
             </form>
-            <footer>Não tem uma conta? <Link to="/register">Crie uma agora</Link></footer>
+            <footer className="text-sm mb-5">
+                Não tem uma conta? <Link to="/register">Crie uma agora</Link>
+            </footer>
         </div>
     );
 }
