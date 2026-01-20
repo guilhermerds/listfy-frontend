@@ -5,9 +5,11 @@ import Input from "../Components/Input";
 import Header from "../Components/Header";
 import toast from "react-hot-toast";
 import '../Css/Register.css';
+import { Helmet } from "react-helmet";
 
 export const Register = () => {
     const navigate = useNavigate();
+    const url = import.meta.env.VITE_FRONTEND_URL;
     const [name, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -69,6 +71,10 @@ export const Register = () => {
 
     return (
         <div id="register-page" className="px-6">
+            <Helmet>
+                <meta property="og:description" content="Crie sua conta gratuita no Listfy em segundos. Comece agora a organizar suas compras de supermercado, dividir despesas e colaborar com quem mora com você." />
+                <link rel="canonical" href={`${url}login`} />
+            </Helmet>
             <Header />
             <h1 className="text-3xl font-bold my-6">Crie sua conta</h1>
             <form onSubmit={createAccount}>

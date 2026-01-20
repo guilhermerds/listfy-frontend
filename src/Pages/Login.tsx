@@ -5,9 +5,11 @@ import Button from "../Components/Button";
 import Input from "../Components/Input";
 import toast from "react-hot-toast";
 import '../Css/Login.css';
+import { Helmet } from "react-helmet";
 
 export const Login = () => {
     const navigate = useNavigate();
+    const url = import.meta.env.VITE_FRONTEND_URL;
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -61,6 +63,10 @@ export const Login = () => {
 
     return (
         <div id="login-page" className="px-6">
+            <Helmet>
+                <meta property="og:description" content="Acesse sua conta Listfy. Entre para ver suas listas de compras compartilhadas, continuar marcando itens e verificar o histórico de preços da sua feira." />
+                <link rel="canonical" href={`${url}login`} />
+            </Helmet>
             <Header />
             <h1 className="text-3xl font-bold my-6">Bem-vindo de volta!</h1>
             <form id="login-form" onSubmit={login}>

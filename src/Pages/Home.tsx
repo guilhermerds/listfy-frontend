@@ -2,11 +2,18 @@ import { useNavigate } from "react-router-dom";
 import ShoppingCart from "../Assets/ShoppingCart.png"
 import ListfyLogo from "../Assets/Logo-Listfy.png"
 import Button from "../Components/Button";
+import { Helmet } from "react-helmet";
+
 
 export const Home = () => {
     const navigate = useNavigate();
+    const url = import.meta.env.VITE_FRONTEND_URL;
     return (
         <main className="flex flex-col h-screen max-w-3xl mx-auto p-6">
+            <Helmet>
+                <meta property="og:description" content="Organize suas compras, colabore em tempo real e controle o total gasto na feira. O app de lista de compras focado em economia." />
+                <link rel="canonical" href={url} />
+            </Helmet>
             <div className="relative flex flex-col items-center">
                 <img
                     src={ShoppingCart}

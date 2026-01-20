@@ -44,6 +44,7 @@ export const ListDetails = () => {
     useEffect(() => {
         const handleJoinRoom = () => {
             console.log(`Entrando na sala: ${listId}`);
+            toast.success("Conectado a lista")
             socket.emit("joinList", listId);
         };
 

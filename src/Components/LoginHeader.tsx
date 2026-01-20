@@ -85,7 +85,7 @@ const Header = ({ returnPath, subtitle, MenuContent, listId }: Props) => {
                     <img
                         className="h-9"
                         src={icon}
-                        alt="Listfy Ícone"
+                        alt="Listify Ícone"
                     />
                     <h3>{subtitle}</h3>
                 </Link>
