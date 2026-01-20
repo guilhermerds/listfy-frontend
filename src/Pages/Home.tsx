@@ -11,7 +11,7 @@ export const Home = () => {
     return (
         <main className="flex flex-col h-screen max-w-3xl mx-auto p-6">
             <Helmet>
-                <meta property="og:description" content="Organize suas compras, colabore em tempo real e controle o total gasto na feira. O app de lista de compras focado em economia." />
+                <meta property="description" content="Organize suas compras, colabore em tempo real e controle o total gasto na feira. O app de lista de compras focado em economia." />
                 <link rel="canonical" href={url} />
             </Helmet>
             <div className="relative flex flex-col items-center">

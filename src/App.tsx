@@ -16,6 +16,7 @@ function App() {
   return (
     <>
       <Helmet>
+        <meta name="description" content="Listas de supermercado compartilhadas com controle de preço. Economize e organize a feira em casal ou grupo." />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Listify" />
         <meta property="og:image" content={Banner} />
