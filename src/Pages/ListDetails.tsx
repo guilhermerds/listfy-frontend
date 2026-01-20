@@ -197,7 +197,7 @@ export const ListDetails = () => {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ name: itemName, price, amount, isDone: false })
+            body: JSON.stringify({ name: itemName, price, amount })
         })
             .then(response => {
                 if (response.status == 200) {
