@@ -64,7 +64,7 @@ export const Login = () => {
     return (
         <div id="login-page" className="px-6">
             <Helmet>
-                <meta property="description" content="Acesse sua conta Listfy. Entre para ver suas listas de compras compartilhadas, continuar marcando itens e verificar o histórico de preços da sua feira." />
+                <meta property="description" content="Acesse sua conta Listify. Entre para ver suas listas de compras compartilhadas, continuar marcando itens e verificar o histórico de preços da sua feira." />
                 <link rel="canonical" href={`${url}login`} />
             </Helmet>
             <Header />

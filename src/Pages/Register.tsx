@@ -72,7 +72,7 @@ export const Register = () => {
     return (
         <div id="register-page" className="px-6">
             <Helmet>
-                <meta property="description" content="Crie sua conta gratuita no Listfy em segundos. Comece agora a organizar suas compras de supermercado, dividir despesas e colaborar com quem mora com você." />
+                <meta property="description" content="Crie sua conta gratuita no Listify em segundos. Comece agora a organizar suas compras de supermercado, dividir despesas e colaborar com quem mora com você." />
                 <link rel="canonical" href={`${url}login`} />
             </Helmet>
             <Header />
