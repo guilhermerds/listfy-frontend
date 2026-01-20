@@ -293,10 +293,10 @@ export const ListDetails = () => {
         return (
             <div className="w-24 bg-secondary-light p-6 shadow-xl rounded-2xl">
                 <div className="space-y-3 text-center">
-                    <a onClick={() => { setEditListName(listName); setEditCategory(category); setIsModalEditListOpen(true) }} className="block text-sm hover:underline cursor-pointer">
+                    <a onClick={() => { setEditListName(listName); setEditCategory(category); setIsModalEditListOpen(true) }} className="block text-sm hover:underline cursor-pointer text-white">
                         Editar lista
                     </a>
-                    <a onClick={deleteList} className="block text-sm hover:underline cursor-pointer">
+                    <a onClick={deleteList} className="block text-sm hover:underline cursor-pointer text-white">
                         Excluir lista
                     </a>
                 </div>
@@ -306,7 +306,7 @@ export const ListDetails = () => {
 
     return (
         <div className="flex flex-col max-w-3xl mx-auto h-full">
-            <LoginHeader returnPath="/lists" subtitle={category} MenuContent={ListMenu} />
+            <LoginHeader returnPath="/lists" subtitle={category} MenuContent={ListMenu} listId={listId} />
             <h1 className="text-3xl text-left font-bold my-6 ml-6">{listName}</h1>
 
             {listItens.length > 0 ?
