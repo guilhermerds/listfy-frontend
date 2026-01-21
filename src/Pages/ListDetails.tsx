@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { socket } from "../Connection/Socket";
-import { Button, Input, LoginHeader, Modal, Checkbox } from "../Components/Index";
+import { Button, Input, LoginHeader, Modal } from "../Components/Index";
 import toast from "react-hot-toast";
 import AddIcon from '@mui/icons-material/Add';
 import formatCurrency from "../Utils/Currency";

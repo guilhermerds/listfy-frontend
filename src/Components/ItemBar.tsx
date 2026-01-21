@@ -10,7 +10,7 @@ interface IProp {
     onClick: () => void
 }
 
-const ItemBar = ({ key, item, onCheckClick, onClick}: IProp) => {
+const ItemBar = ({ key, item, onCheckClick, onClick }: IProp) => {
     return (
         <li key={key} className="flex mb-4">
             <Checkbox item={item} onClick={onCheckClick} />
