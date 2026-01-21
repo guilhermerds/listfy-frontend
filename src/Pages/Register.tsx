@@ -106,10 +106,10 @@ export const Register = () => {
                     value={confirmPassword}
                     setValue={setConfirmPassword}
                     placeholder="Confirme sua senha" />
-                <Button className="text-black" type="submit">Registrar</Button>
+                <Button className="text-black" type="submit">Criar Conta</Button>
             </form>
             <footer className="text-sm mb-6">
-                Já tem uma conta? <Link to="/login">Entrar</Link>
+                Já tem uma conta? <Link to="/login">Fazer Login</Link>
             </footer>
         </div>
     );

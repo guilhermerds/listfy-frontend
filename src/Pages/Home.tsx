@@ -40,7 +40,7 @@ export const Home = () => {
                     Criar Conta
                 </Button>
                 <Button onClick={() => { navigate("/login") }} priority={false}>
-                    Entrar
+                    Fazer Login
                 </Button>
             </div>
             {/* 
