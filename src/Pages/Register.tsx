@@ -47,6 +47,12 @@ export const Register = () => {
             const token = data.access_token;
 
             if (token) {
+                if ((window as any)?.gtag){
+                    (window as any).gtag('event', 'conversion', {
+                        'send_to': 'AW-17891812629/SNzPCNHOgOobEJXKvdNC'
+                    });
+                }
+
                 toast.dismiss();
                 localStorage.setItem('authToken', token);
                 navigate('/lists');
