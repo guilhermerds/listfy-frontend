@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import AddIcon from '@mui/icons-material/Add';
 import formatCurrency from "../Utils/Currency";
 import DeleteIcon from '@mui/icons-material/Delete';
+import ItemBar from "../Components/ItemBar";
 
 
 export type IListItem = {
@@ -24,7 +25,7 @@ type ISocketMessage = {
 export const ListDetails = () => {
     const baseUrl = import.meta.env.VITE_SERVER_URL;
     const token = localStorage.getItem('authToken');
-    const { id } = useParams(); 
+    const { id } = useParams();
     const listId = id || "";
 
     const navigate = useNavigate();
@@ -50,7 +51,7 @@ export const ListDetails = () => {
 
     //     const handleListUpdated = (data: ISocketMessage) => {
     //         console.log("Item updated:", data);
-            
+
     //         setListItens((prevItems) => {
     //             const currentItems = prevItems || []; 
 
@@ -61,13 +62,13 @@ export const ListDetails = () => {
     //                         return currentItems;
     //                     }
     //                     return [...currentItems, data.item];
-                    
+
     //                 case 'ITEM-UPDATED':
     //                     return currentItems.map(item => item.id === data.item.id ? data.item : item);
-                    
+
     //                 case 'ITEM-DELETED':
     //                     return currentItems.filter(item => item.id !== data.item.id);
-                        
+
     //                 default:
     //                     return currentItems;
     //             }
@@ -97,7 +98,7 @@ export const ListDetails = () => {
         // 1. Atualiza o token na instância do socket antes de conectar
         // Isso garante que, se acabou de logar, o socket vá autenticado
         if (token) {
-            socket.auth = { token }; 
+            socket.auth = { token };
         }
 
         const handleJoinRoom = () => {
@@ -108,9 +109,9 @@ export const ListDetails = () => {
 
         const handleListUpdated = (data: ISocketMessage) => {
             console.log("Item updated:", data);
-            
+
             setListItens((prevItems) => {
-                const currentItems = prevItems || []; 
+                const currentItems = prevItems || [];
 
                 switch (data.type) {
                     case 'ITEM-ADDED':
@@ -118,13 +119,13 @@ export const ListDetails = () => {
                         const exists = currentItems.some(item => item.id === data.item.id);
                         if (exists) return currentItems;
                         return [...currentItems, data.item];
-                    
+
                     case 'ITEM-UPDATED':
                         return currentItems.map(item => item.id === data.item.id ? data.item : item);
-                    
+
                     case 'ITEM-DELETED':
                         return currentItems.filter(item => item.id !== data.item.id);
-                        
+
                     default:
                         return currentItems;
                 }
@@ -146,7 +147,7 @@ export const ListDetails = () => {
         // 4. Cleanup (Desmontagem do componente)
         return () => {
             console.log("Saindo da tela da lista...");
-            
+
             // REMOVE os listeners específicos dessa tela
             socket.off("connect", handleJoinRoom);
             socket.off("listUpdated", handleListUpdated);
@@ -154,8 +155,8 @@ export const ListDetails = () => {
             // IMPORTANTE: Não desconecte o socket global, apenas saia da sala
             // Se seu backend tiver o evento 'leaveList', use-o. 
             // Se não tiver, apenas remover o listener 'listUpdated' já previne o update de estado
-            socket.emit("leaveList", listId); 
-            
+            socket.emit("leaveList", listId);
+
             // NÃO use socket.disconnect() aqui se for um SPA (Single Page Application)
         };
     }, [listId, token]);
@@ -381,30 +382,20 @@ export const ListDetails = () => {
                 (
                     <ul className="flex-1 overflow-y-auto px-6">
                         {listItens?.map((item, index) => (
-                            <li key={index} className="flex mb-4">
-                                <Checkbox item={item} onClick={(e) => {
+                            <ItemBar
+                                key={index}
+                                item={item}
+                                onCheckClick={(e) => {
                                     updateItem(item.id, e.currentTarget.checked);
-                                }} />
-
-                                <div
-                                    onClick={() => {
-                                        setIsModalEditItemOpen(true);
-                                        setItemId(item.id);
-                                        setItemName(item.name);
-                                        setItemAmount(String(item.amount));
-                                        setItemPrice(formatCurrency(item.price));
-                                    }}
-                                    className={`flex justify-between w-full pr-4 cursor-pointer ${item.isDone && "line-through text-gray-400"}`}
-                                >
-                                    <div className="mr-2">
-                                        <p>{item.name}</p>
-                                        <p className="text-sm text-gray-400 text-left">{item.amount}</p>
-                                    </div>
-                                    <div className="flex items-center">
-                                        <p>{formatCurrency(item.price, true)}</p>
-                                    </div>
-                                </div>
-                            </li>
+                                }}
+                                onClick={() => {
+                                    setIsModalEditItemOpen(true);
+                                    setItemId(item.id);
+                                    setItemName(item.name);
+                                    setItemAmount(String(item.amount));
+                                    setItemPrice(formatCurrency(item.price));
+                                }}
+                            />
                         ))}
                     </ul>
                 )
