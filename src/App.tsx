@@ -9,6 +9,7 @@ import ProtectedRoute from './Components/ProtectedRoute'
 import { Toaster } from 'react-hot-toast'
 import { Helmet } from 'react-helmet'
 import Banner from './Assets/Banner.png'
+import LoggedRoutes from './Components/LoggedRoutes'
 
 
 function App() {
@@ -30,8 +31,12 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={
+            <LoggedRoutes><Login /></LoggedRoutes>
+          } />
+          <Route path="/register" element={
+            <LoggedRoutes><Register /></LoggedRoutes>
+          } />
 
           <Route path="/lists" element={
             <ProtectedRoute><Lists /></ProtectedRoute>
