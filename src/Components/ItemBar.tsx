@@ -19,12 +19,14 @@ const ItemBar = ({ key, item, onCheckClick, onClick }: IProp) => {
                 onClick={onClick}
                 className={`flex justify-between w-full pr-4 cursor-pointer ${item.isDone && "line-through text-gray-400"}`}
             >
-                <div className="mr-2">
+                <div className="mr-2 text-left">
                     <p>{item.name}</p>
-                    <p className="text-sm text-gray-400 text-left">{item.amount}</p>
+                    <p className="text-sm text-gray-400">
+                        {item.amount} x {formatCurrency(item.price, true)}
+                        </p>
                 </div>
                 <div className="flex items-center">
-                    <p>{formatCurrency(item.price, true)}</p>
+                    <p>{formatCurrency((item.price*item.amount), true)}</p>
                 </div>
             </div>
         </li>
