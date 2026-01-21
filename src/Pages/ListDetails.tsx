@@ -42,58 +42,6 @@ export const ListDetails = () => {
     const [itemAmount, setItemAmount] = useState("");
     const [itemPrice, setItemPrice] = useState("");
 
-    // useEffect(() => {
-    //     const handleJoinRoom = () => {
-    //         console.log(`Entrando na sala: ${listId}`);
-    //         toast.success("Conectado a lista")
-    //         socket.emit("joinList", listId);
-    //     };
-
-    //     const handleListUpdated = (data: ISocketMessage) => {
-    //         console.log("Item updated:", data);
-
-    //         setListItens((prevItems) => {
-    //             const currentItems = prevItems || []; 
-
-    //             switch (data.type) {
-    //                 case 'ITEM-ADDED':
-    //                     const uniqueItems = new Set(currentItems.map(item => item.id));
-    //                     if (uniqueItems.has(data.item.id)) {
-    //                         return currentItems;
-    //                     }
-    //                     return [...currentItems, data.item];
-
-    //                 case 'ITEM-UPDATED':
-    //                     return currentItems.map(item => item.id === data.item.id ? data.item : item);
-
-    //                 case 'ITEM-DELETED':
-    //                     return currentItems.filter(item => item.id !== data.item.id);
-
-    //                 default:
-    //                     return currentItems;
-    //             }
-    //         });
-    //     };
-
-    //     if (!socket.connected) {
-    //         socket.connect();
-    //     }
-
-    //     socket.on("connect", handleJoinRoom);
-    //     socket.on("listUpdated", handleListUpdated);
-
-    //     if (socket.connected) {
-    //         handleJoinRoom();
-    //     }
-
-    //     return () => {
-    //         console.log("Limpando listeners...");
-    //         socket.off("connect", handleJoinRoom);
-    //         socket.off("listUpdated", handleListUpdated);
-    //         socket.disconnect();
-    //     };
-    // }, [listId]);
-
     useEffect(() => {
         // 1. Atualiza o token na instância do socket antes de conectar
         // Isso garante que, se acabou de logar, o socket vá autenticado

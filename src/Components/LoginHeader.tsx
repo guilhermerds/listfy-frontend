@@ -3,7 +3,7 @@ import icon from "../Assets/Logo-Listfy.png"
 import { MoreVert, ArrowBackIosNew } from '@mui/icons-material';
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { PersonAdd, Send } from '@mui/icons-material';
+import { IosShare, Send } from '@mui/icons-material';
 import Modal from "./Modal";
 import Input from "./Input";
 import Button from "./Button";
@@ -92,8 +92,11 @@ const Header = ({ returnPath, subtitle, MenuContent, listId }: Props) => {
             </div>
             {listId && (
                 <div className="mx-6">
-                    <button type="button" onClick={() => { setIsShareModalOpen(true); setShareEmail("") }}>
-                        <PersonAdd className="text-primary" />
+                    <button
+                        type="button"
+                        className="cursor-pointer"
+                        onClick={() => { setIsShareModalOpen(true); setShareEmail("") }}>
+                        <IosShare className="text-primary" />
                     </button>
                 </div>
             )}
