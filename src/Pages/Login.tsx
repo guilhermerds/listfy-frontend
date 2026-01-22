@@ -12,14 +12,15 @@ export const Login = () => {
     const url = import.meta.env.VITE_FRONTEND_URL;
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const login = async (e: { preventDefault: () => void; }) => {
-        e.preventDefault();
-
+    const login = async () => {
         if (!email || !password) {
             toast.error('Por favor, preencha todos os campos.');
             return;
         }
+
+        setIsLoading(true);
 
         const baseUrl = import.meta.env.VITE_SERVER_URL;
         try {
@@ -59,6 +60,8 @@ export const Login = () => {
         catch (error) {
             toast.error('Erro ao fazer login, tente novamente mais tarde.');
         }
+
+        setIsLoading(false);
     }
 
     return (
@@ -69,7 +72,7 @@ export const Login = () => {
             </Helmet>
             <Header />
             <h1 className="text-3xl font-bold my-6">Bem-vindo de volta!</h1>
-            <form id="login-form" onSubmit={login}>
+            <form id="login-form">
                 <Input
                     label="Email"
                     type="email"
@@ -86,7 +89,7 @@ export const Login = () => {
                     setValue={setPassword}
                     placeholder="Digite sua senha"
                 />
-                <Button type="submit">Login</Button>
+                <Button type="button" onClick={login} isLoading={isLoading}>Login</Button>
             </form>
             <footer className="text-sm mb-5">
                 Não tem uma conta? <Link to="/register">Crie uma agora</Link>

@@ -5,6 +5,7 @@ import ListBar from "../Components/ListBar";
 import AddIcon from '@mui/icons-material/Add';
 import { Modal, Input, Button } from "../Components/Index";
 import toast from "react-hot-toast";
+import LoadingElement from "../Components/LoadingElement";
 
 export type IList = {
     id: string;
@@ -21,6 +22,8 @@ export const Lists = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [listName, setListName] = useState("");
     const [category, setCategory] = useState("");
+    const [isLoadingPage, setIsLoadingPage] = useState(true);
+
 
     useEffect(() => {
         const baseUrl = import.meta.env.VITE_SERVER_URL;
@@ -45,9 +48,10 @@ export const Lists = () => {
             console.error('Failed to fetch lists');
         }).then((data: IList[]) => {
             setLists(data);
+            setIsLoadingPage(false);
 
-        }).catch(error => {
-            console.error('Error fetching lists:', error);
+        }).catch(() => {
+            toast.error('Erro ao buscar as suas listas. Tente novamente mais tarde.');
         });
     }, []);
 
@@ -100,11 +104,16 @@ export const Lists = () => {
                         <ListBar key={list.id} list={list} />
                     ))}
                 </div>
-            ) : (
-                <p className="flex-1 content-center text-lg">
-                    Crie a sua primeira Lista para adicionar os itens de compra. Clique no botão a baixo para começar.
-                </p>
-            )}
+            ) :
+                isLoadingPage ?
+                    <div className="flex-1 flex justify-center items-center">
+                        <LoadingElement className="h-20 w-20" priority={false} />
+                    </div>
+                    :
+                    <p className="flex-1 content-center text-lg">
+                        Crie a sua primeira Lista para adicionar os itens de compra. Clique no botão a baixo para começar.
+                    </p>
+            }
 
             <button className="h-13 w-13 rounded-full text-secondary bg-primary ml-auto my-4 cursor-pointer" onClick={() => setIsModalOpen(true)}>
                 <AddIcon fontSize="large" />

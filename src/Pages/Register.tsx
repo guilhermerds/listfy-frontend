@@ -14,10 +14,9 @@ export const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const createAccount = async (e: { preventDefault: () => void; }) => {
-        e.preventDefault();
-
+    const createAccount = async () => {
         if (!name || !email || !password || !confirmPassword) {
             toast.error('Por favor, preencha todos os campos.');
             return;
@@ -32,6 +31,7 @@ export const Register = () => {
             toast.error('As senhas não coincidem.');
             return;
         }
+        setIsLoading(true);
 
         const baseUrl = import.meta.env.VITE_SERVER_URL;
         const response = await fetch(`${baseUrl}user`, {
@@ -47,7 +47,7 @@ export const Register = () => {
             const token = data.access_token;
 
             if (token) {
-                if ((window as any)?.gtag){
+                if ((window as any)?.gtag) {
                     (window as any).gtag('event', 'conversion', {
                         'send_to': 'AW-17891812629/SNzPCNHOgOobEJXKvdNC'
                     });
@@ -72,7 +72,7 @@ export const Register = () => {
                     break;
             }
         }
-
+        setIsLoading(false);
     }
 
     return (
@@ -83,7 +83,7 @@ export const Register = () => {
             </Helmet>
             <Header />
             <h1 className="text-3xl font-bold my-6">Crie sua conta</h1>
-            <form onSubmit={createAccount}>
+            <form>
                 <Input
                     label="Nome"
                     type="text"
@@ -112,7 +112,13 @@ export const Register = () => {
                     value={confirmPassword}
                     setValue={setConfirmPassword}
                     placeholder="Confirme sua senha" />
-                <Button className="text-black" type="submit">Criar Conta</Button>
+                <Button
+                    className="text-black"
+                    onClick={createAccount}
+                    type="button"
+                    isLoading={isLoading}>
+                    Criar Conta
+                </Button>
             </form>
             <footer className="text-sm mb-6">
                 Já tem uma conta? <Link to="/login">Fazer Login</Link>

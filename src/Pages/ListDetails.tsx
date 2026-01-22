@@ -7,6 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import formatCurrency from "../Utils/Currency";
 import DeleteIcon from '@mui/icons-material/Delete';
 import ItemBar from "../Components/ItemBar";
+import LoadingElement from "../Components/LoadingElement";
 
 
 export type IListItem = {
@@ -29,6 +30,8 @@ export const ListDetails = () => {
     const listId = id || "";
 
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingPage, setIsLoadingPage] = useState(true);
     const [listName, setListName] = useState("");
     const [category, setCategory] = useState("");
     const [editListName, setEditListName] = useState("");
@@ -147,10 +150,11 @@ export const ListDetails = () => {
             })
             .then((data: IListItem[]) => {
                 setListItens(data);
+                setIsLoadingPage(false);
             });
     }, []);
 
-    const updateItem = (itemId: string, isDone: boolean) => {
+    const updateItemIsDone = (itemId: string, isDone: boolean) => {
         fetch(`${baseUrl}lists/${listId}/items/${itemId}`, {
             method: 'PATCH',
             headers: {
@@ -159,7 +163,16 @@ export const ListDetails = () => {
             },
             body: JSON.stringify({ isDone })
         })
-            .then(response => {
+            .then(async (response) => {
+                if (response.status === 200) {
+                    const data: IListItem = await response.json();
+
+                    setListItens((prevItems) => {
+                        const currentItems = prevItems || [];
+
+                        return currentItems.map(item => item.id === data.id ? data : item);
+                    });
+                }
                 if (response.status === 401) {
                     localStorage.removeItem('authToken');
                     navigate('/login');
@@ -173,6 +186,8 @@ export const ListDetails = () => {
             return;
         }
 
+        setIsLoading(true);
+
         const amount = Number(itemAmount);
         const price = parseFloat(itemPrice.replace(".", "").replace(",", "."));
 
@@ -184,8 +199,20 @@ export const ListDetails = () => {
             },
             body: JSON.stringify({ name: itemName, price, amount, isDone: false })
         })
-            .then(response => {
+            .then(async (response) => {
                 if (response.status == 201) {
+                    const data: IListItem = await response.json();
+
+                    setListItens((prevItems) => {
+                        const currentItems = prevItems || [];
+
+                        const exists = currentItems.some(item => item.id === data.id);
+
+                        if (exists) return currentItems;
+
+                        return [...currentItems, data];
+                    });
+
                     toast.success("Item criado com Sucesso.");
                     setIsModalCreateItemOpen(false);
                 }
@@ -196,6 +223,8 @@ export const ListDetails = () => {
                 else {
                     toast.error("Não foi possível criar o item. Tente novamente mais tarde.")
                 }
+
+                setIsLoading(false)
             });
     }
 
@@ -204,6 +233,8 @@ export const ListDetails = () => {
             toast.error("Por favor, preencha todos os campos.");
             return;
         }
+
+        setIsLoading(true);
 
         const amount = Number(itemAmount);
         const price = Number(itemPrice.replace(".", "").replace(",", "."));
@@ -216,8 +247,16 @@ export const ListDetails = () => {
             },
             body: JSON.stringify({ name: itemName, price, amount })
         })
-            .then(response => {
+            .then(async (response) => {
                 if (response.status == 200) {
+                    const data: IListItem = await response.json();
+
+                    setListItens((prevItems) => {
+                        const currentItems = prevItems || [];
+
+                        return currentItems.map(item => item.id === data.id ? data : item);
+                    });
+
                     toast.success("Item atualizado com Sucesso.");
                     setIsModalEditItemOpen(false);
                 }
@@ -228,10 +267,13 @@ export const ListDetails = () => {
                 else {
                     toast.error("Não foi possível atualizar o item. Tente novamente mais tarde.")
                 }
+
+                setIsLoading(false);
             });
     }
 
     const deleteItem = async () => {
+        setIsLoading(true);
         const response = await fetch(`${baseUrl}lists/${listId}/items/${itemId}`, {
             method: 'DELETE',
             headers: {
@@ -240,6 +282,12 @@ export const ListDetails = () => {
         });
 
         if (response.ok) {
+            setListItens((prevItems) => {
+                const currentItems = prevItems || [];
+
+                return currentItems.filter(item => item.id !== itemId);
+            });
+
             toast.success('Item excluído com sucesso!');
             setIsModalEditItemOpen(false);
         }
@@ -250,6 +298,8 @@ export const ListDetails = () => {
         else {
             toast.error('Erro ao excluir o Item. Tente novamente mais tarde.');
         }
+
+        setIsLoading(false);
     }
 
     const editList = async () => {
@@ -257,6 +307,8 @@ export const ListDetails = () => {
             toast.error('Por favor, preencha todos os campos.');
             return;
         }
+
+        setIsLoading(true);
 
         const response = await fetch(`${baseUrl}lists/${listId}`, {
             method: 'PATCH',
@@ -283,6 +335,8 @@ export const ListDetails = () => {
         else {
             toast.error('Erro ao atualizar a lista. Tente novamente mais tarde.');
         }
+
+        setIsLoading(false);
     }
 
     const deleteList = async () => {
@@ -334,7 +388,7 @@ export const ListDetails = () => {
                                 key={index}
                                 item={item}
                                 onCheckClick={(e) => {
-                                    updateItem(item.id, e.currentTarget.checked);
+                                    updateItemIsDone(item.id, e.currentTarget.checked);
                                 }}
                                 onClick={() => {
                                     setIsModalEditItemOpen(true);
@@ -348,9 +402,14 @@ export const ListDetails = () => {
                     </ul>
                 )
                 : (
-                    <p className="flex-1 content-center m-6 h-full">
-                        Não existem itens nesta lista. Adicione no botão a baixo!
-                    </p>
+                    isLoadingPage ?
+                        <div className="flex-1 flex justify-center items-center">
+                            <LoadingElement className="h-20 w-20" priority={false} />
+                        </div>
+                        :
+                        <p className="flex-1 content-center m-6 h-full">
+                            Não existem itens nesta lista. Adicione no botão a baixo!
+                        </p>
                 )
             }
             <button
@@ -405,7 +464,10 @@ export const ListDetails = () => {
                         label="Categoria"
                         placeholder="Digite a categoria da lista" />
 
-                    <Button className="mt-4" onClick={editList}>
+                    <Button
+                        isLoading={isLoading}
+                        className="mt-4"
+                        onClick={editList}>
                         Salvar
                     </Button>
                 </div>
@@ -440,10 +502,17 @@ export const ListDetails = () => {
 
 
                     <div className="flex gap-3">
-                        <Button priority={false} className="mt-4" onClick={() => { setIsModalCreateItemOpen(false) }}>
+                        <Button
+                            isLoading={isLoading}
+                            priority={false}
+                            className="mt-4"
+                            onClick={() => { setIsModalCreateItemOpen(false) }}>
                             Cancelar
                         </Button>
-                        <Button className="mt-4" onClick={createItem}>
+                        <Button
+                            isLoading={isLoading}
+                            className="mt-4"
+                            onClick={createItem}>
                             Salvar
                         </Button>
                     </div>
@@ -485,10 +554,17 @@ export const ListDetails = () => {
                         placeholder="Digite o valor de 1 item" />
 
                     <div className="flex gap-3">
-                        <Button priority={false} className="mt-4" onClick={() => { setIsModalEditItemOpen(false) }}>
+                        <Button
+                            priority={false}
+                            isLoading={isLoading}
+                            className="mt-4"
+                            onClick={() => { setIsModalEditItemOpen(false) }}>
                             Cancelar
                         </Button>
-                        <Button className="mt-4" onClick={editItem}>
+                        <Button
+                            className="mt-4"
+                            onClick={editItem}
+                            isLoading={isLoading}>
                             Salvar
                         </Button>
                     </div>
