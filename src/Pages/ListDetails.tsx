@@ -155,6 +155,12 @@ export const ListDetails = () => {
     }, []);
 
     const updateItemIsDone = (itemId: string, isDone: boolean) => {
+        setListItens((prevItems) => {
+            const currentItems = prevItems || [];
+
+            return currentItems.map(item => item.id === itemId ? { ...item, isDone } : item);
+        });
+
         fetch(`${baseUrl}lists/${listId}/items/${itemId}`, {
             method: 'PATCH',
             headers: {
@@ -164,7 +170,7 @@ export const ListDetails = () => {
             body: JSON.stringify({ isDone })
         })
             .then(async (response) => {
-                if (response.status === 200) {
+                if (response.status === 200 || response.status === 204) {
                     const data: IListItem = await response.json();
 
                     setListItens((prevItems) => {
@@ -173,9 +179,18 @@ export const ListDetails = () => {
                         return currentItems.map(item => item.id === data.id ? data : item);
                     });
                 }
-                if (response.status === 401) {
+                else if (response.status === 401) {
                     localStorage.removeItem('authToken');
                     navigate('/login');
+                }
+                else {
+                    setListItens((prevItems) => {
+                        const currentItems = prevItems || [];
+
+                        return currentItems.map(item => item.id === itemId ? { ...item, isDone: !isDone } : item);
+                    });
+
+                    toast.error("Não foi possível marcar como comprado o item. Tente novamente mais tarde");
                 }
             });
     }
