@@ -43,9 +43,6 @@ export const Home = () => {
                     Fazer Login
                 </Button>
             </div>
-            {/* 
-            <p><Link to="/register">Criar Conta</Link></p>
-            <p><Link to="/login">Entrar</Link></p> */}
         </main>
     );
 }

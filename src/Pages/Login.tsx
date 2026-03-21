@@ -89,6 +89,7 @@ export const Login = () => {
                     setValue={setPassword}
                     placeholder="Digite sua senha"
                 />
+                <a href="/forgot-password" className="text-sm text-primary hover:underline mb-6 block text-right">Esqueci minha senha</a>
                 <Button type="button" onClick={login} isLoading={isLoading}>Login</Button>
             </form>
             <footer className="text-sm mb-5">

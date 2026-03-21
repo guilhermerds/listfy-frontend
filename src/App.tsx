@@ -10,10 +10,10 @@ import { Toaster } from 'react-hot-toast'
 import { Helmet } from 'react-helmet'
 import Banner from './Assets/Banner.png'
 import LoggedRoutes from './Components/LoggedRoutes'
-
+import { ResetPassword } from './Pages/ResetPassword'
+import { ForgotPassword } from './Pages/ForgotPassword'
 
 function App() {
-
   return (
     <>
       <Helmet>
@@ -31,6 +31,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/login" element={
             <LoggedRoutes><Login /></LoggedRoutes>
           } />
