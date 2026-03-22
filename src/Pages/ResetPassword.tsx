@@ -30,7 +30,7 @@ export const ResetPassword = () => {
             return;
         }
         setIsLoading(true);
-        console.log("Reset token: " + resetToken);
+        
         const response = await fetch(`${import.meta.env.VITE_SERVER_URL}user/reset-password`, {
             method: 'POST',
             headers: {
