@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import icon from "../Assets/Logo-Listfy.png"
 import { MoreVert, ArrowBackIosNew } from '@mui/icons-material';
 import { AnimatePresence, motion } from "framer-motion";
