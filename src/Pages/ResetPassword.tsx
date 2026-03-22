@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button, Header, Input } from "../Components/Index";
 import toast from "react-hot-toast";
 import { useNavigate, useSearchParams } from "react-router";
+import { publicApi } from "../Connection/Axios";
 
 export const ResetPassword = () => {
     const [searchParams] = useSearchParams();
@@ -31,19 +32,14 @@ export const ResetPassword = () => {
         }
         setIsLoading(true);
         
-        const response = await fetch(`${import.meta.env.VITE_SERVER_URL}user/reset-password`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ newPassword: password, token: resetToken, userId }),
-        });
+        try{
+            await publicApi.post('user/reset-password', { newPassword: password, token: resetToken, userId });
 
-        if (response.ok) {
             toast.success('Senha redefinida com sucesso!');
             navigate('/login');
-        } else {
-            toast.error('Ocorreu um erro ao redefinir a senha. Tente novamente.');
+        }
+        catch (error) {
+            toast.error('O link do email já expirou. Solicite um novo link para redefinir sua senha.');
             setIsLoading(false);
         }
     }

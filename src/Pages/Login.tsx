@@ -6,6 +6,7 @@ import Input from "../Components/Input";
 import toast from "react-hot-toast";
 import '../Css/Login.css';
 import { Helmet } from "react-helmet";
+import { publicApi } from "../Connection/Axios";
 
 export const Login = () => {
     const navigate = useNavigate();
@@ -22,23 +23,18 @@ export const Login = () => {
 
         setIsLoading(true);
 
-        const baseUrl = import.meta.env.VITE_SERVER_URL;
         try {
-            const response = await fetch(`${baseUrl}auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
-            })
+            const response = await publicApi.post('auth/login', { email, password });
+            
 
-            if (response.ok) {
-                const data = await response.json();
-                const token = data.access_token;
+            if (response.status === 200) {
+                const data = response.data;
 
-                if (token) {
+                if (data.accessToken) {
                     toast.dismiss();
-                    localStorage.setItem('authToken', token);
+                    localStorage.setItem('accessToken', data.accessToken);
+                    localStorage.setItem('refreshToken', data.refreshToken);
+
                     navigate('/lists');
                 }
                 else {
@@ -46,7 +42,7 @@ export const Login = () => {
                 }
             }
             else {
-                const errorData = await response.json();
+                const errorData = response.data;
                 switch (errorData.code) {
                     case 'EMAIL_PASSWORD_INCORRECT':
                         toast.error('Email ou senha inválidos. Tente novamente.');

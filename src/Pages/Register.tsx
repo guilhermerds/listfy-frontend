@@ -6,6 +6,7 @@ import Header from "../Components/Header";
 import toast from "react-hot-toast";
 import '../Css/Register.css';
 import { Helmet } from "react-helmet";
+import { publicApi } from "../Connection/Axios";
 
 export const Register = () => {
     const navigate = useNavigate();
@@ -33,37 +34,42 @@ export const Register = () => {
         }
         setIsLoading(true);
 
-        const baseUrl = import.meta.env.VITE_SERVER_URL;
-        const response = await fetch(`${baseUrl}user`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name, email, password }),
-        })
+        try{
+            const response  = await publicApi.post('user', { name, email, password });
+            if (response.status === 201) {
+                const data = response.data;
 
-        if (response.ok) {
-            const data = await response.json();
-            const token = data.access_token;
+                if (data.accessToken) {
+                    if ((window as any)?.gtag) {
+                        (window as any).gtag('event', 'conversion', {
+                            'send_to': 'AW-17891812629/SNzPCNHOgOobEJXKvdNC'
+                        });
+                    }
 
-            if (token) {
-                if ((window as any)?.gtag) {
-                    (window as any).gtag('event', 'conversion', {
-                        'send_to': 'AW-17891812629/SNzPCNHOgOobEJXKvdNC'
-                    });
+                    toast.dismiss();
+                    localStorage.setItem('accessToken', data.accessToken);
+                    localStorage.setItem('refreshToken', data.refreshToken);
+                    navigate('/lists');
                 }
-
-                toast.dismiss();
-                localStorage.setItem('authToken', token);
-                navigate('/lists');
+                else {
+                    toast.error('Erro ao criar conta, tente novamente mais tarde.');
+                }
             }
             else {
-                toast.error('Erro ao criar conta, tente novamente mais tarde.');
+                const errorData = response.data;
+                switch (errorData.code) {
+                    case 'EMAIL_ALREADY_EXISTS':
+                        toast.error('O email fornecido já está em uso. Utilize outro email.');
+                        break;
+                    default:
+                        toast.error(`Erro ao criar conta, confira os dados e tente novamente.`);
+                        break;
+                }
             }
         }
-        else {
-            const errorData = await response.json();
-            switch (errorData.code) {
+        catch (error: any) {
+            const code = error.response?.data.code;
+            switch (code) {
                 case 'EMAIL_ALREADY_EXISTS':
                     toast.error('O email fornecido já está em uso. Utilize outro email.');
                     break;
@@ -71,7 +77,7 @@ export const Register = () => {
                     toast.error(`Erro ao criar conta, confira os dados e tente novamente.`);
                     break;
             }
-        }
+        }        
         setIsLoading(false);
     }
 
@@ -79,7 +85,7 @@ export const Register = () => {
         <div id="register-page" className="px-6">
             <Helmet>
                 <meta property="description" content="Crie sua conta gratuita no Listify em segundos. Comece agora a organizar suas compras de supermercado, dividir despesas e colaborar com quem mora com você." />
-                <link rel="canonical" href={`${url}login`} />
+                <link rel="canonical" href={`${url}register`} />
             </Helmet>
             <Header />
             <h1 className="text-3xl font-bold my-6">Crie sua conta</h1>

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import LoginHeader from "../Components/LoginHeader";
-import { useNavigate } from "react-router-dom";
 import ListBar from "../Components/ListBar";
 import AddIcon from '@mui/icons-material/Add';
 import { Modal, Input, Button } from "../Components/Index";
 import toast from "react-hot-toast";
 import LoadingElement from "../Components/LoadingElement";
+import { api } from "../Connection/Axios";
 
 export type IList = {
     id: string;
@@ -17,7 +17,6 @@ export type IList = {
 }
 
 export const Lists = () => {
-    const navigate = useNavigate();
     const [lists, setLists] = useState<IList[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [listName, setListName] = useState("");
@@ -26,32 +25,14 @@ export const Lists = () => {
 
 
     useEffect(() => {
-        const baseUrl = import.meta.env.VITE_SERVER_URL;
-        const token = localStorage.getItem('authToken');
-
-        const fetchLists = fetch(`${baseUrl}lists`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
+        api.get('/lists').then(response => {
+            if (response.status === 200) {
+                setLists(response.data);
+                setIsLoadingPage(false);
             }
-        });
-
-        fetchLists.then(response => {
-            if (response.ok) {
-                return response.json();
-            }
-            if (response.status === 401) {
-                localStorage.removeItem('authToken');
-                navigate('/login');
-            }
-
-            console.error('Failed to fetch lists');
-        }).then((data: IList[]) => {
-            setLists(data);
-            setIsLoadingPage(false);
-
         }).catch(() => {
             toast.error('Erro ao buscar as suas listas. Tente novamente mais tarde.');
+            setIsLoadingPage(false);
         });
     }, []);
 
@@ -61,33 +42,15 @@ export const Lists = () => {
             return;
         }
 
-        const baseUrl = import.meta.env.VITE_SERVER_URL;
-        const token = localStorage.getItem('authToken');
-
-        const response = await fetch(`${baseUrl}lists`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                name: listName,
-                category: category
-            })
-        });
-
-        if (response.ok) {
-            const newList: IList = await response.json();
-            setLists([...lists, newList]);
-            toast.success('Lista criada com sucesso!');
-        }
-        else if (response.status === 401) {
-            localStorage.removeItem('authToken');
-            navigate('/login');
-        }
-        else {
+        api.post('/lists', { name: listName, category }).then(response => {
+            if (response.status === 201) {
+                const newList: IList = response.data;
+                setLists([...lists, newList]);
+                toast.success('Lista criada com sucesso!');
+            }
+        }).catch(() => {
             toast.error('Erro ao criar a lista. Tente novamente.');
-        }
+        });
 
         setListName("");
         setCategory("");

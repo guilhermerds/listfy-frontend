@@ -3,6 +3,7 @@ import Button from "../Components/Button";
 import Header from "../Components/Header";
 import Input from "../Components/Input";
 import toast from "react-hot-toast";
+import { publicApi } from "../Connection/Axios";
 
 export const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -15,18 +16,12 @@ export const ForgotPassword = () => {
         }
 
         setIsLoading(true);
+        try {
+            await publicApi.post('user/forgot-password', { email });
 
-        const response = await fetch(`${import.meta.env.VITE_SERVER_URL}user/forgot-password`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email }),
-        });
-
-        if (response.ok) {
             toast.success('Email de recuperação enviado! Verifique sua caixa de entrada.');
-        } else {
+        }
+        catch (error) {
             toast.error('Ocorreu um erro ao enviar o email de recuperação. Tente novamente.');
         }
         setIsLoading(false);

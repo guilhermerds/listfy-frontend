@@ -8,6 +8,7 @@ import Modal from "./Modal";
 import Input from "./Input";
 import Button from "./Button";
 import toast from "react-hot-toast";
+import { api } from "../Connection/Axios";
 
 type Props = {
     returnPath?: string;
@@ -17,10 +18,7 @@ type Props = {
 }
 
 const Header = ({ returnPath, subtitle, MenuContent, listId }: Props) => {
-    const navigate = useNavigate();
-    const baseUrl = import.meta.env.VITE_SERVER_URL;
     const url = import.meta.env.VITE_FRONTEND_URL;
-    const token = localStorage.getItem('authToken');
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [shareEmail, setShareEmail] = useState("");
 
@@ -29,46 +27,38 @@ const Header = ({ returnPath, subtitle, MenuContent, listId }: Props) => {
       text: `Estou compartilhando minha lista de compras com você no Listify. Acesse o link para ver e editar comigo: ${url}login`,
     };
 
-    const shareList = () => {
-        fetch(`${baseUrl}lists/${listId}/share`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ shareEmail })
-        })
-            .then(async response => {
-                if (response.status === 200) {
-                    setIsShareModalOpen(false);
+    const shareList = async () => {
+        try{
+            const response = await api.post(`/lists/${listId}/share`, { shareEmail });
 
-                    if (navigator.share) {
-                        try {
-                            await navigator.share(shareData);
-                            toast.success('Compartilhado com sucesso!');
-                        } catch (error) {
-                            // O usuário pode ter cancelado ou deu erro
-                            console.log('Erro ao compartilhar ou cancelado:', error);
-                        }
-                    } else {
-                        try {
-                            await navigator.clipboard.writeText(shareData.text);
+            if (response.status === 200) {
+                setIsShareModalOpen(false);
 
-                            toast.success('Link Copiado! Compartilhe com o link.');
-                        } catch (err) {
-                            alert('Não foi possível compartilhar automaticamente.');
-                        }
+                if (navigator.share) {
+                    try {
+                        await navigator.share(shareData);
+
+                        toast.success('Compartilhado com sucesso!');
+                    } catch (error) {
+                        console.log('Erro ao compartilhar ou cancelado:', error);
                     }
+                } else {
+                    try {
+                        await navigator.clipboard.writeText(shareData.text);
 
+                        toast.success('Link Copiado! Compartilhe com o link.');
+                    } catch {
+                        toast.error('Não foi possível compartilhar automaticamente.');
+                    }
                 }
-                else if (response.status === 401) {
-                    localStorage.removeItem('authToken');
-                    navigate('/login');
-                }
-                else {
-                    toast.error('Erro ao compartilhar a lista. Tente novamente mais tarde.')
-                }
-            });
+
+            }
+            else {
+                toast.error('Erro ao compartilhar a lista. Tente novamente mais tarde.')
+            }
+        } catch (error) {
+            toast.error('Erro ao compartilhar a lista. Tente novamente mais tarde.')
+        }
     }
 
     return (

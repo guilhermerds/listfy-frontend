@@ -7,9 +7,9 @@ interface LoggedRoutesProps {
 }
 
 const LoggedRoutes: React.FC<LoggedRoutesProps> = ({ children }) => {
-  const authToken = localStorage.getItem('authToken');
+  const accessToken = localStorage.getItem('accessToken');
 
-  if (authToken) {
+  if (accessToken) {
     return <Navigate to="/lists" replace />;
   }
 

@@ -8,6 +8,7 @@ import formatCurrency from "../Utils/Currency";
 import DeleteIcon from '@mui/icons-material/Delete';
 import ItemBar from "../Components/ItemBar";
 import LoadingElement from "../Components/LoadingElement";
+import { api } from "../Connection/Axios";
 
 
 export type IListItem = {
@@ -24,8 +25,7 @@ type ISocketMessage = {
 }
 
 export const ListDetails = () => {
-    const baseUrl = import.meta.env.VITE_SERVER_URL;
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('accessToken');
     const { id } = useParams();
     const listId = id || "";
 
@@ -113,43 +113,22 @@ export const ListDetails = () => {
     }, [listId, token]);
 
     useEffect(() => {
-        fetch(`${baseUrl}lists/${listId}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
+        api.get(`/lists/${listId}`)
             .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                else if (response.status === 401) {
-                    localStorage.removeItem('authToken');
-                    navigate('/login');
-                }
+                setListName(response.data.name);
+                setCategory(response.data.category);
             })
-            .then(data => {
-                setListName(data.name);
-                setCategory(data.category);
+            .catch(() => {
+                toast.error("Erro ao carregar os detalhes da lista. Tente novamente mais tarde.");
             });
 
-        fetch(`${baseUrl}lists/${listId}/items`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
+        api.get(`/lists/${listId}/items`)
             .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                else if (response.status === 401) {
-                    localStorage.removeItem('authToken');
-                    navigate('/login');
-                }
+                setListItens(response.data);
+                setIsLoadingPage(false);
             })
-            .then((data: IListItem[]) => {
-                setListItens(data);
+            .catch(() => {
+                toast.error("Erro ao carregar os itens da lista. Tente novamente mais tarde.");
                 setIsLoadingPage(false);
             });
     }, []);
@@ -161,29 +140,16 @@ export const ListDetails = () => {
             return currentItems.map(item => item.id === itemId ? { ...item, isDone } : item);
         });
 
-        fetch(`${baseUrl}lists/${listId}/items/${itemId}`, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ isDone })
-        })
-            .then(async (response) => {
-                if (response.status === 200 || response.status === 204) {
-                    const data: IListItem = await response.json();
-
+        api.patch(`/lists/${listId}/items/${itemId}`, { isDone })
+            .then(({data}) => {
+                try{
                     setListItens((prevItems) => {
                         const currentItems = prevItems || [];
 
                         return currentItems.map(item => item.id === data.id ? data : item);
                     });
                 }
-                else if (response.status === 401) {
-                    localStorage.removeItem('authToken');
-                    navigate('/login');
-                }
-                else {
+                catch {
                     setListItens((prevItems) => {
                         const currentItems = prevItems || [];
 
@@ -206,17 +172,10 @@ export const ListDetails = () => {
         const amount = Number(itemAmount);
         const price = parseFloat(itemPrice.replace(".", "").replace(",", "."));
 
-        fetch(`${baseUrl}lists/${listId}/items`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ name: itemName, price, amount, isDone: false })
-        })
+        api.post(`/lists/${listId}/items`, { name: itemName, price, amount, isDone: false })
             .then(async (response) => {
                 if (response.status == 201) {
-                    const data: IListItem = await response.json();
+                    const data: IListItem = response.data;
 
                     setListItens((prevItems) => {
                         const currentItems = prevItems || [];
@@ -230,10 +189,6 @@ export const ListDetails = () => {
 
                     toast.success("Item criado com Sucesso.");
                     setIsModalCreateItemOpen(false);
-                }
-                else if (response.status === 401) {
-                    localStorage.removeItem('authToken');
-                    navigate('/login');
                 }
                 else {
                     toast.error("Não foi possível criar o item. Tente novamente mais tarde.")
@@ -254,17 +209,10 @@ export const ListDetails = () => {
         const amount = Number(itemAmount);
         const price = Number(itemPrice.replace(".", "").replace(",", "."));
 
-        fetch(`${baseUrl}lists/${listId}/items/${itemId}`, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ name: itemName, price, amount })
-        })
+        api.patch(`/lists/${listId}/items/${itemId}`, { name: itemName, price, amount })
             .then(async (response) => {
                 if (response.status == 200) {
-                    const data: IListItem = await response.json();
+                    const data: IListItem = await response.data;
 
                     setListItens((prevItems) => {
                         const currentItems = prevItems || [];
@@ -274,10 +222,6 @@ export const ListDetails = () => {
 
                     toast.success("Item atualizado com Sucesso.");
                     setIsModalEditItemOpen(false);
-                }
-                else if (response.status === 401) {
-                    localStorage.removeItem('authToken');
-                    navigate('/login');
                 }
                 else {
                     toast.error("Não foi possível atualizar o item. Tente novamente mais tarde.")
@@ -289,14 +233,9 @@ export const ListDetails = () => {
 
     const deleteItem = async () => {
         setIsLoading(true);
-        const response = await fetch(`${baseUrl}lists/${listId}/items/${itemId}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+        const response = await api.delete(`/lists/${listId}/items/${itemId}`);
 
-        if (response.ok) {
+        if (response.status === 200) {
             setListItens((prevItems) => {
                 const currentItems = prevItems || [];
 
@@ -305,10 +244,6 @@ export const ListDetails = () => {
 
             toast.success('Item excluído com sucesso!');
             setIsModalEditItemOpen(false);
-        }
-        else if (response.status === 401) {
-            localStorage.removeItem('authToken');
-            navigate('/login');
         }
         else {
             toast.error('Erro ao excluir o Item. Tente novamente mais tarde.');
@@ -325,27 +260,13 @@ export const ListDetails = () => {
 
         setIsLoading(true);
 
-        const response = await fetch(`${baseUrl}lists/${listId}`, {
-            method: 'PATCH',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: editListName,
-                category: editCategory
-            })
-        });
+        const response = await api.patch(`/lists/${listId}`, { name: editListName, category: editCategory });
 
-        if (response.ok) {
+        if (response.status === 200) {
             setIsModalEditListOpen(false);
             setListName(editListName);
             setCategory(editCategory);
             toast.success('Lista atualizada com sucesso!');
-        }
-        else if (response.status === 401) {
-            localStorage.removeItem('authToken');
-            navigate('/login');
         }
         else {
             toast.error('Erro ao atualizar a lista. Tente novamente mais tarde.');
@@ -355,20 +276,11 @@ export const ListDetails = () => {
     }
 
     const deleteList = async () => {
-        const response = await fetch(`${baseUrl}lists/${listId}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
+        const response = await api.delete(`/lists/${listId}`);
 
-        if (response.ok) {
+        if (response.status === 200) {
             navigate('/lists');
             toast.success('Lista excluída com sucesso!');
-        }
-        else if (response.status === 401) {
-            localStorage.removeItem('authToken');
-            navigate('/login');
         }
         else {
             toast.error('Erro ao excluir a lista. Tente novamente mais tarde.');
